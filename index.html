@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Codingan Anak Indonesia</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+    :root{
+      --bg1:#e7f3ff;
+      --bg2:#cfe7ff;
+      --card:#ffffffdd;
+      --accent:#0b63d6;
+      --glass: rgba(255,255,255,0.12);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Helvetica,Arial,sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#0b2b4a}
+    .app{min-height:100vh;display:flex;gap:24px;padding:24px}
+
+    /* Sidebar Menu */
+    .menu{position:fixed;left:18px;top:18px;background:var(--card);backdrop-filter: blur(6px);border-radius:14px;box-shadow:0 8px 28px rgba(11,38,64,0.08);overflow:hidden;width:260px;}
+    .menu header{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid rgba(11,38,64,0.06)}
+    .menu header img{width:44px;height:44px;border-radius:10px;flex:0 0 44px}
+    .menu header h1{font-size:15px;margin:0;line-height:1.2}
+    .menu header small{font-size:11px;color:rgba(11,38,64,0.55)}
+    .menu nav{display:flex;flex-direction:column;padding:8px 0}
+    .menu .role{font-size:12px;font-weight:800;color:rgba(11,38,64,0.45);padding:8px 16px;text-transform:uppercase;letter-spacing:0.6px;border-bottom:1px solid rgba(11,38,64,0.05)}
+    .menu button{background:transparent;border:0;padding:12px 16px;text-align:left;font-weight:700;cursor:pointer;font-size:14px;color:var(--accent);display:flex;align-items:center;gap:12px;width:100%;transition:background .18s, transform .12s}
+    .menu button:hover{background:rgba(11,99,214,0.06);transform:translateX(4px)}
+    .menu button.active{background:linear-gradient(90deg,rgba(11,99,214,0.10),transparent);border-left:4px solid var(--accent);padding-left:12px}
+    .menu svg{width:20px;height:20px;fill:var(--accent);transition:transform .18s}
+    .menu button:hover svg{transform:rotate(8deg) translateY(-1px)}
+    .menu .hint{font-size:12px;color:rgba(11,38,64,0.45);padding:8px 16px}
+
+    /* Main content */
+    .main{flex:1;display:flex;flex-direction:column;gap:18px;margin-left:300px}
+    .card{background:var(--card);padding:20px;border-radius:14px;box-shadow:0 6px 26px rgba(11,38,64,0.06)}
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:18px}
+    @media(max-width:1100px){.grid{grid-template-columns:1fr} .main{margin-left:20px;padding-top:80px}}
+    footer{margin-top:auto;text-align:center;padding:18px;font-size:13px;color:rgba(11,38,64,0.55)}
+
+    /* Scanner Area */
+    #reader{width:100%;min-height:360px;border-radius:12px;overflow:hidden;background:#000}
+    .scan-controls{display:flex;gap:10px;align-items:center;margin-top:12px}
+    .btn{padding:9px 14px;border-radius:10px;border:0;background:var(--accent);color:#fff;font-weight:800;cursor:pointer}
+    .btn.secondary{background:transparent;color:var(--accent);border:1px solid rgba(11,99,214,0.12)}
+    .status{margin-left:auto;font-weight:700;color:var(--accent)}
+    #scan-result{padding:12px;background:#f6fbff;border-radius:10px;margin-top:12px;min-height:46px;word-break:break-word}
+    #fail-msg{color:#c33;font-weight:800;margin-top:8px;display:none}
+
+    /* Generator */
+    .generator form{display:flex;gap:8px;align-items:center}
+    .generator input[type=text]{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(11,38,64,0.06)}
+    .preview{margin-top:12px;display:flex;gap:12px;align-items:center}
+    #qr-preview img{border-radius:10px;box-shadow:0 8px 20px rgba(11,38,64,0.06)}
+
+    /* Socials */
+    .socials a{display:inline-block;margin:6px 8px;padding:10px 12px;border-radius:10px;background:var(--glass);text-decoration:none;color:var(--accent);font-weight:800}
+
+    /* small helpers */
+    .muted{color:rgba(11,38,64,0.55);font-size:13px}
+    .title-row{display:flex;align-items:center;gap:12px}
+    .title-row h2{margin:0}
+  </style>
+
+  <!-- html5-qrcode (scanner lib) -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.7/minified/html5-qrcode.min.js"></script>
+</head>
+<body>
+  <aside class="menu" role="navigation" aria-label="Menu Utama">
+    <header>
+      <!-- simple svg logo (replaceable) -->
+      <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48rect width='60' height='60' rx='12' fill='%23b8deff' /><text x='30' y='36' font-size='20' font-family='Arial' fill='white' text-anchor='middle'>CI</text></svg>" alt="logo">
+      <div>
+        <h1>Codingan Anak Indonesia</h1>
+        <small>Coding Pemuda Indonesia ®</small>
+      </div>
+    </header>
+
+    <nav>
+      <div class="role">Main Menu</div>
+
+      <button id="tab-scan" class="active" role="menuitem" aria-controls="card-scan">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h4V2H2v6h2zm16 0v4h2V2h-6v2h4zM4 16H2v6h6v-2H4zm16 0v4h-4v2h6v-6zM5 11h14v2H5z"/></svg>
+        Scan QR & Barcode
+      </button>
+
+      <button id="tab-generate" role="menuitem" aria-controls="card-generate">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2zm1 17.93V20h-2v-.07A8.01 8.01 0 0 1 4.07 13H4v-2h.07A8.01 8.01 0 0 1 11 4.07V4h2v.07A8.01 8.01 0 0 1 19.93 11H20v2h-.07A8.01 8.01 0 0 1 13 19.93z"/></svg>
+        Generate QR Code
+      </button>
+
+      <button id="tab-sosmed" role="menuitem" aria-controls="card-sosmed">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2zm.25 17.938A7.953 7.953 0 0 1 4.062 12.25H6a6.002 6.002 0 0 0 6 6v1.688zM12 13a1 1 0 1 1 1-1A1.001 1.001 0 0 1 12 13zm6-.75A6.002 6.002 0 0 0 12 6V4.062A7.953 7.953 0 0 1 19.938 11.25H18z"/></svg>
+        Sosmed Dev
+      </button>
+
+      <div class="hint">Background: Biru keputihan — Elegan</div>
+    </nav>
+  </aside>
+
+  <main class="app" role="main">
+    <div class="main">
+      <div class="grid">
+        <!-- Left: Scanner + generator stacked -->
+        <div>
+          <!-- Scan -->
+          <section id="card-scan" class="card" role="region" aria-labelledby="scan-title">
+            <div class="title-row"><h2 id="scan-title">Scan QR / Barcode</h2></div>
+            <div id="reader" aria-live="polite"></div>
+            <div class="scan-controls">
+              <select id="camera-select" aria-label="Pilih kamera"></select>
+              <button id="start-scan" class="btn" aria-pressed="false">Start Scan</button>
+              <button id="stop-scan" class="btn secondary">Stop</button>
+              <label class="btn secondary" style="cursor:pointer">
+                Ambil dari Album
+                <input type="file" id="file-input" accept="image/*" style="display:none" aria-hidden="true">
+              </label>
+              <div id="scan-status" class="status" aria-live="polite"></div>
+            </div>
+
+            <div style="margin-top:12px">
+              <strong>Hasil:</strong>
+              <div id="scan-result" tabindex="0" title="Klik untuk menyalin hasil">—</div>
+              <div id="fail-msg">No Failed</div>
+            </div>
+          </section>
+
+          <!-- Generator -->
+          <section id="card-generate" class="card" role="region" aria-labelledby="gen-title" style="margin-top:18px;display:none">
+            <div class="title-row"><h2 id="gen-title">Generate QR Code</h2></div>
+            <p class="muted">API yang digunakan: goqr.me / api.qrserver.com (menghasilkan image PNG)</p>
+
+            <div class="generator">
+              <form id="gen-form" onsubmit="return false" aria-label="Form generate qr">
+                <input id="gen-text" type="text" placeholder="Masukkan teks / url" aria-label="Teks QR">
+                <select id="size" aria-label="Ukuran">
+                  <option value="150">150x150</option>
+                  <option value="300" selected>300x300</option>
+                  <option value="500">500x500</option>
+                </select>
+                <button id="gen-btn" class="btn">Generate</button>
+              </form>
+            </div>
+
+            <div class="preview">
+              <div id="qr-preview">Belum ada QR</div>
+              <div>
+                <a id="download-qr" class="btn secondary" style="display:none" download="qrcode.png">Download</a>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right column: Sosmed & info -->
+        <aside>
+          <section id="card-sosmed" class="card" role="region" aria-labelledby="sos-title" style="display:none">
+            <div class="title-row"><h2 id="sos-title">Sosmed Dev</h2></div>
+            <div class="socials" aria-hidden="false">
+              <a href="https://wa.me/6285800114299" target="_blank" rel="noopener">WhatsApp: +62 858 0011 4299</a>
+              <a href="https://www.tiktok.com/@pengguna.tiktok19" target="_blank" rel="noopener">TikTok: pengguna.tiktok19</a>
+              <a href="https://www.youtube.com/@DjZhiProject" target="_blank" rel="noopener">YouTube: DjZhiProject</a>
+            </div>
+            <p class="muted" style="margin-top:12px">Terima kasih telah memakai <strong>Codingan Anak Indonesia</strong></p>
+          </section>
+
+          <section class="card" style="margin-top:18px">
+            <h3>Informasi</h3>
+            <p class="muted">Klik hasil scan untuk menyalin. Jika hasil adalah URL, akan otomatis dibuka di tab baru (Chrome/Browser default).</p>
+          </section>
+        </aside>
+      </div>
+
+      <footer>© <strong>Coding Pemuda Indonesia ®</strong></footer>
+    </div>
+  </main>
+
+<script>
+/* -------------------------------
+   Tab/menu handling (role navigation)
+   ------------------------------- */
+const tabScan = document.getElementById('tab-scan');
+const tabGen  = document.getElementById('tab-generate');
+const tabSos  = document.getElementById('tab-sosmed');
+const cardScan = document.getElementById('card-scan');
+const cardGen  = document.getElementById('card-generate');
+const cardSos  = document.getElementById('card-sosmed');
+
+function setActive(tabBtn){
+  [tabScan, tabGen, tabSos].forEach(b=>{
+    b.classList.remove('active');
+    b.setAttribute('aria-pressed','false');
+  });
+  tabBtn.classList.add('active');
+  tabBtn.setAttribute('aria-pressed','true');
+
+  // show/hide cards
+  cardScan.style.display = tabBtn === tabScan ? '' : 'none';
+  cardGen.style.display  = tabBtn === tabGen  ? '' : 'none';
+  cardSos.style.display  = tabBtn === tabSos  ? '' : 'none';
+}
+
+tabScan.addEventListener('click', ()=>setActive(tabScan));
+tabGen.addEventListener('click', ()=>setActive(tabGen));
+tabSos.addEventListener('click', ()=>setActive(tabSos));
+
+/* -------------------------------
+   Scanner using html5-qrcode
+   ------------------------------- */
+const html5QrCode = new Html5Qrcode("reader");
+const cameraSelect = document.getElementById('camera-select');
+const startBtn = document.getElementById('start-scan');
+const stopBtn  = document.getElementById('stop-scan');
+const scanStatus = document.getElementById('scan-status');
+const scanResult = document.getElementById('scan-result');
+const failMsg = document.getElementById('fail-msg');
+let currentCameraId = null;
+
+async function beep(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = 'sine'; o.frequency.value = 900;
+    g.gain.value = 0.05;
+    o.connect(g); g.connect(ctx.destination);
+    o.start();
+    setTimeout(()=>{ o.stop(); ctx.close(); }, 120);
+  }catch(e){}
+}
+
+function isUrl(text){
+  try{ new URL(text); return true }catch(e){ return false }
+}
+
+function handleScanSuccess(decodedText){
+  beep();
+  scanResult.textContent = decodedText;
+  failMsg.style.display = 'none';
+  if(isUrl(decodedText)){
+    scanStatus.textContent = 'URL terdeteksi — membuka di tab baru...';
+    // open in new tab (user asked Chrome/browser). This opens in user's default browser tab.
+    window.open(decodedText, '_blank');
+  } else {
+    scanStatus.textContent = 'Teks terdeteksi (klik hasil untuk menyalin)';
+  }
+}
+
+function handleScanFailure(error){
+  // short status update
+  scanStatus.textContent = 'Mencari QR/Barcode...';
+}
+
+async function listCameras(){
+  try{
+    const devices = await Html5Qrcode.getCameras();
+    cameraSelect.innerHTML = '';
+    devices.forEach(dev=>{
+      const opt = document.createElement('option');
+      opt.value = dev.id; opt.textContent = dev.label || dev.id;
+      cameraSelect.appendChild(opt);
+    });
+    if(devices.length) currentCameraId = devices[0].id;
+  }catch(e){
+    cameraSelect.innerHTML = '<option>Camera tidak tersedia</option>';
+  }
+}
+
+cameraSelect.addEventListener('change', ()=>{ currentCameraId = cameraSelect.value; });
+
+startBtn.addEventListener('click', async ()=>{
+  if(!currentCameraId){ scanStatus.textContent = 'Tidak ada kamera tersedia'; return; }
+  scanStatus.textContent = 'Memulai kamera...';
+  try{
+    await html5QrCode.start(
+      currentCameraId,
+      { fps: 10, qrbox: { width: 300, height: 300 } },
+      (decodedText, decodedResult) => handleScanSuccess(decodedText),
+      (errorMessage) => handleScanFailure(errorMessage)
+    );
+    scanStatus.textContent = 'Sedang scanning...';
+    failMsg.style.display = 'none';
+  }catch(err){
+    scanStatus.textContent = 'Gagal mulai kamera: ' + (err && err.message ? err.message : err);
+  }
+});
+
+stopBtn.addEventListener('click', async ()=>{
+  try{ await html5QrCode.stop(); scanStatus.textContent = 'Scanner dihentikan'; }catch(e){}
+});
+
+// scan from file (album)
+const fileInput = document.getElementById('file-input');
+fileInput.addEventListener('change', async (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  try{
+    const result = await Html5Qrcode.scanFile(file, true);
+    handleScanSuccess(result.decodedText);
+  }catch(err){
+    failMsg.style.display = 'block';
+    failMsg.textContent = 'No Failed';
+    scanResult.textContent = '';
+  }
+});
+
+listCameras();
+
+/* copy result on click */
+scanResult.addEventListener('click', ()=>{
+  const text = scanResult.textContent.trim();
+  if(!text) return;
+  navigator.clipboard?.writeText(text).then(()=>{ scanStatus.textContent = 'Teks disalin ke clipboard'; }, ()=>{ scanStatus.textContent = 'Gagal menyalin'; });
+});
+
+/* ensure stop on unload */
+window.addEventListener('beforeunload', async ()=>{ try{ await html5QrCode.stop(); }catch(e){} });
+
+
+/* -------------------------------
+   Generator (goqr.me compatible)
+   Note: goqr.me docs point to api.qrserver.com endpoint for direct PNG images.
+   ------------------------------- */
+const genBtn = document.getElementById('gen-btn');
+const genText = document.getElementById('gen-text');
+const qrPreview = document.getElementById('qr-preview');
+const downloadLink = document.getElementById('download-qr');
+const sizeSelect = document.getElementById('size');
+
+genBtn.addEventListener('click', ()=>{
+  const text = genText.value.trim();
+  if(!text){ alert('Masukkan teks atau URL terlebih dahulu'); return; }
+  const size = sizeSelect.value;
+  // Using the goqr.me compatible endpoint (api.qrserver.com) to produce PNG
+  const encoded = encodeURIComponent(text);
+  const url = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encoded}`;
+  qrPreview.innerHTML = `<img alt="qrcode" src="${url}" width="${size}" height="${size}">`;
+  downloadLink.href = url;
+  downloadLink.style.display = '';
+});
+
+/* small accessibility: support Enter to generate */
+genText.addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ e.preventDefault(); genBtn.click(); } });
+
+/* default active view */
+setActive(tabScan);
+</script>
+</body>
+</html>
